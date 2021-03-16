@@ -268,23 +268,21 @@ class Data(private val objectMapper: ObjectMapper) {
 
             val data = root.get("results").get(0).get("result").get("data").get("dsr").get("DS").get(0)
 
-/*            val counties: MutableMap<Int, String> = mutableMapOf()
+            val counties: MutableMap<Int, String> = mutableMapOf()
             data.get("ValueDicts").get("D0").forEachIndexed { i, e ->
                 counties[i] = e.asText()
-            }*/
+            }
 
 
             (data.get("PH").get(0).get("DM0") as ArrayNode).forEach {
                 val county = (it.get("C") as ArrayNode)
                 if (it.get("R") != null && it.get("R").asInt() == 1) {
-                    fileContent.add("\"${county.get(0).asText()}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
+                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
                 } else if (it.get("R") != null && it.get("R").asInt() == 2) {
-                    fileContent.add("\"${county.get(0).asText()}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
+                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
                 } else {
-                    fileContent.add("\"${county.get(0).asText()}\"|${ county.get(1).asInt()}|${county.get(2).asInt()}")
+                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${ county.get(1).asInt()}|${county.get(2).asInt()}")
                 }
-
-
             }
 
             Files.write(file.toPath(), fileContent.joinToString("\n").toByteArray())
