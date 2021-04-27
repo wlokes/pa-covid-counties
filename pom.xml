@@ -11,10 +11,10 @@
     <groupId>com.example</groupId>
     <artifactId>covidvacs</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
+    <name>pa-covid-vacs-data</name>
+    <description>Generates CSV file of PA COVID Vaccine administration counts</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <kotlin.version>1.4.21</kotlin.version>
     </properties>
     <dependencies>
@@ -42,6 +42,28 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.12.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <!-- Exclude the Tomcat dependency -->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Use Jetty instead -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.konghq/unirest-java -->

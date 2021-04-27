@@ -11,8 +11,8 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import java.io.File
-import java.io.IOException
 import java.nio.file.Files
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -20,9 +20,10 @@ import kotlin.system.exitProcess
 
 
 @SpringBootApplication
+@EnableWebMvc
 class PaCovidVacDataParsers(private val data: Data) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        data.getData()
+       // data.getData()
     }
 
 }
@@ -41,7 +42,7 @@ class DataBeans {
 class Data(private val objectMapper: ObjectMapper) {
 
     private val requestBody =
-        """
+            """
          {
              "version": "1.0.0",
              "queries": [
@@ -230,16 +231,16 @@ class Data(private val objectMapper: ObjectMapper) {
         """.trimIndent()
 
     private val headers: Map<String, String> = mapOf(
-        "Accept" to "application/json",
-        "Content-Type" to "application/json",
-        "X-PowerBI-ResourceKey" to "da0f9423-f4be-4676-b242-4ecf4f49d002"
+            "Accept" to "application/json",
+            "Content-Type" to "application/json",
+            "X-PowerBI-ResourceKey" to "da0f9423-f4be-4676-b242-4ecf4f49d002"
     )
 
-    fun getData() {
+    fun getData(): List<String> {
 
         val response = Unirest.post("https://wabi-us-gov-iowa-api.analysis.usgovcloudapi.net/public/reports/querydata")
-            .headers(headers)
-            .body(requestBody).asString()
+                .headers(headers)
+                .body(requestBody).asString()
 
         if (!response.isSuccess || response.body == null) {
             System.err.println("Unable to download PA data file")
@@ -248,18 +249,7 @@ class Data(private val objectMapper: ObjectMapper) {
 
         println("Successfully downloaded PA data file and converting it to a CSV")
 
-        val file = File(
-            System.getProperty("user.home"),
-            "Desktop/pa_counties_covid_vaccine_count_${
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-            }.csv"
-        )
 
-        try {
-            Files.createFile(file.toPath())
-        } catch (e: IOException) {
-            System.err.println("Problem creating file: " + e.message)
-        }
         val fileContent: MutableList<String> = mutableListOf()
         fileContent.add("\"county\"|\"partially covered\"|\"fully covered\"")
 
@@ -276,23 +266,37 @@ class Data(private val objectMapper: ObjectMapper) {
 
             (data.get("PH").get(0).get("DM0") as ArrayNode).forEach {
                 val county = (it.get("C") as ArrayNode)
-                if (it.get("R") != null && it.get("R").asInt() == 1) {
+                if (it.get("R") != null && it.get("R").asInt() == 4) {
                     fileContent.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
                 } else if (it.get("R") != null && it.get("R").asInt() == 2) {
                     fileContent.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
                 } else {
-                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${ county.get(1).asInt()}|${county.get(2).asInt()}")
+                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|${county.get(2).asInt()}")
                 }
             }
+            return fileContent
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
 
-            Files.write(file.toPath(), fileContent.joinToString("\n").toByteArray())
-        } catch(e: Exception) {
+    fun csv() {
+        val file = File(
+                System.getProperty("user.home"),
+                "Desktop/pa_counties_covid_vaccine_count_${
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+                }.csv"
+        )
+
+        try {
+            Files.createFile(file.toPath())
+            val data = getData()
+            Files.write(file.toPath(), data.joinToString("\n").toByteArray())
+            println("Done. Results file:" + file.absolutePath)
+        } catch (e: java.lang.Exception) {
             System.err.println("Unable to create CSV file: " + e.message)
             exitProcess(1)
         }
-
-        println("Done. Results file:" + file.absolutePath)
     }
 }
-
 
