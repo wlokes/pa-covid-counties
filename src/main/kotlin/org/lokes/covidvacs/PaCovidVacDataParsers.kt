@@ -14,8 +14,11 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import java.io.File
 import java.nio.file.Files
+import java.text.Collator
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 
@@ -250,8 +253,7 @@ class Data(private val objectMapper: ObjectMapper) {
         println("Successfully downloaded PA data file and converting it to a CSV")
 
 
-        val fileContent: MutableList<String> = mutableListOf()
-        fileContent.add("\"county\"|\"partially covered\"|\"fully covered\"")
+        val countyCounts: SortedSet<String> = TreeSet()
 
         try {
             val root: JsonNode = objectMapper.readTree(response.body)
@@ -267,13 +269,16 @@ class Data(private val objectMapper: ObjectMapper) {
             (data.get("PH").get(0).get("DM0") as ArrayNode).forEach {
                 val county = (it.get("C") as ArrayNode)
                 if (it.get("R") != null && it.get("R").asInt() == 4) {
-                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
                 } else if (it.get("R") != null && it.get("R").asInt() == 2) {
-                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
                 } else {
-                    fileContent.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|${county.get(2).asInt()}")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|${county.get(2).asInt()}")
                 }
             }
+            val fileContent: MutableList<String> = ArrayList(countyCounts.size + 1)
+            fileContent.add("\"county\"|\"partially covered\"|\"fully covered\"")
+            fileContent.addAll(countyCounts)
             return fileContent
         } catch (e: Exception) {
             throw RuntimeException(e)
