@@ -46,191 +46,210 @@ class Data(private val objectMapper: ObjectMapper) {
 
     private val requestBody =
             """
-         {
-             "version": "1.0.0",
-             "queries": [
-                 {
-                     "Query": {
-                         "Commands": [
-                             {
-                                 "SemanticQueryDataShapeCommand": {
-                                     "Query": {
-                                         "Version": 2,
-                                         "From": [
-                                             {
-                                                 "Name": "f",
-                                                 "Entity": "Counts of People by County",
-                                                 "Type": 0
-                                             }
-                                         ],
-                                         "Select": [
-                                             {
-                                                 "Column": {
-                                                     "Expression": {
-                                                         "SourceRef": {
-                                                             "Source": "f"
-                                                         }
-                                                     },
-                                                     "Property": "County"
-                                                 },
-                                                 "Name": "Counts of People by County.County"
-                                             },
-                                             {
-                                                 "Aggregation": {
-                                                     "Expression": {
-                                                         "Column": {
-                                                             "Expression": {
-                                                                 "SourceRef": {
-                                                                     "Source": "f"
-                                                                 }
-                                                             },
-                                                             "Property": "PartiallyCovered"
-                                                         }
-                                                     },
-                                                     "Function": 0
-                                                 },
-                                                 "Name": "Sum(Counts of People by County.PartiallyCovered)"
-                                             },
-                                             {
-                                                 "Aggregation": {
-                                                     "Expression": {
-                                                         "Column": {
-                                                             "Expression": {
-                                                                 "SourceRef": {
-                                                                     "Source": "f"
-                                                                 }
-                                                             },
-                                                             "Property": "FullyCovered"
-                                                         }
-                                                     },
-                                                     "Function": 0
-                                                 },
-                                                 "Name": "Sum(Counts of People by County.FullyCovered)"
-                                             }
-                                         ],
-                                         "Where": [
-                                             {
-                                                 "Condition": {
-                                                     "Not": {
-                                                         "Expression": {
-                                                             "In": {
-                                                                 "Expressions": [
-                                                                     {
-                                                                         "Column": {
-                                                                             "Expression": {
-                                                                                 "SourceRef": {
-                                                                                     "Source": "f"
-                                                                                 }
-                                                                             },
-                                                                             "Property": "County"
-                                                                         }
-                                                                     }
-                                                                 ],
-                                                                 "Values": [
-                                                                     [
-                                                                         {
-                                                                             "Literal": {
-                                                                                 "Value": "null"
-                                                                             }
-                                                                         }
-                                                                     ],
-                                                                     [
-                                                                         {
-                                                                             "Literal": {
-                                                                                 "Value": "''"
-                                                                             }
-                                                                         }
-                                                                     ],
-                                                                     [
-                                                                         {
-                                                                             "Literal": {
-                                                                                 "Value": "'Out-of-State'"
-                                                                             }
-                                                                         }
-                                                                     ]
-                                                                 ]
-                                                             }
-                                                         }
-                                                     }
-                                                 }
-                                             }
-                                         ],
-                                         "OrderBy": [
-                                             {
-                                                 "Direction": 2,
-                                                 "Expression": {
-                                                     "Aggregation": {
-                                                         "Expression": {
-                                                             "Column": {
-                                                                 "Expression": {
-                                                                     "SourceRef": {
-                                                                         "Source": "f"
-                                                                     }
-                                                                 },
-                                                                 "Property": "PartiallyCovered"
-                                                             }
-                                                         },
-                                                         "Function": 0
-                                                     }
-                                                 }
-                                             }
-                                         ]
-                                     },
-                                     "Binding": {
-                                         "Primary": {
-                                             "Groupings": [
-                                                 {
-                                                     "Projections": [
-                                                         0,
-                                                         1,
-                                                         2
-                                                     ]
-                                                 }
-                                             ]
-                                         },
-                                         "DataReduction": {
-                                             "DataVolume": 4,
-                                             "Primary": {
-                                                 "Top": {}
-                                             }
-                                         },
-                                         "Aggregates": [
-                                             {
-                                                 "Select": 1,
-                                                 "Aggregations": [
-                                                     {
-                                                         "Min": {}
-                                                     },
-                                                     {
-                                                         "Max": {}
-                                                     }
-                                                 ]
-                                             }
-                                         ],
-                                         "SuppressedJoinPredicates": [
-                                             2
-                                         ],
-                                         "Version": 1
-                                     }
-                                 }
-                             }
-                         ]
-                     },
-                     "CacheKey": "{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"Counts of People by County\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"County\"},\"Name\":\"Counts of People by County.County\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"PartiallyCovered\"}},\"Function\":0},\"Name\":\"Sum(Counts of People by County.PartiallyCovered)\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"FullyCovered\"}},\"Function\":0},\"Name\":\"Sum(Counts of People by County.FullyCovered)\"}],\"Where\":[{\"Condition\":{\"Not\":{\"Expression\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"County\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"null\"}}],[{\"Literal\":{\"Value\":\"''\"}}],[{\"Literal\":{\"Value\":\"'Out-of-State'\"}}]]}}}}}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"PartiallyCovered\"}},\"Function\":0}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[0,1,2]}]},\"DataReduction\":{\"DataVolume\":4,\"Primary\":{\"Top\":{}}},\"Aggregates\":[{\"Select\":1,\"Aggregations\":[{\"Min\":{}},{\"Max\":{}}]}],\"SuppressedJoinPredicates\":[2],\"Version\":1}}}]}",
-                     "QueryId": "",
-                     "ApplicationContext": {
-                         "DatasetId": "1e549164-aeab-4dcf-a97f-f70de27e715d",
-                         "Sources": [
-                             {
-                                 "ReportId": "53c72848-c634-4597-a571-54c087a01780"
-                             }
-                         ]
-                     }
-                 }
-             ],
-             "cancelQueries": [],
-             "modelId": 314528
-         }
+{
+  "version": "1.0.0",
+  "queries": [
+    {
+      "Query": {
+        "Commands": [
+          {
+            "SemanticQueryDataShapeCommand": {
+              "Query": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "f",
+                    "Entity": "Counts of People by County",
+                    "Type": 0
+                  },
+                  {
+                    "Name": "c",
+                    "Entity": "Counts of Vaccinations by County of Residence",
+                    "Type": 0
+                  }
+                ],
+                "Select": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "f"
+                        }
+                      },
+                      "Property": "County"
+                    },
+                    "Name": "FromBHSR.County"
+                  },
+                  {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "PartiallyCovered"
+                        }
+                      },
+                      "Function": 0
+                    },
+                    "Name": "Sum(FromBHSR.PartiallyCovered)"
+                  },
+                  {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "FullyCovered"
+                        }
+                      },
+                      "Function": 0
+                    },
+                    "Name": "Sum(FromBHSR.FullyCovered)"
+                  },
+                  {
+                    "Aggregation": {
+                      "Expression": {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "f"
+                            }
+                          },
+                          "Property": "AdditionalDose1"
+                        }
+                      },
+                      "Function": 0
+                    },
+                    "Name": "Sum(Counts of People by County.AdditionalDose1)"
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "c"
+                                }
+                              },
+                              "Property": "Is Latest Row Filter"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "1L"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "Condition": {
+                      "Not": {
+                        "Expression": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "f"
+                                    }
+                                  },
+                                  "Property": "County"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "''"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "OrderBy": [
+                  {
+                    "Direction": 1,
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "f"
+                          }
+                        },
+                        "Property": "County"
+                      }
+                    }
+                  }
+                ]
+              },
+              "Binding": {
+                "Primary": {
+                  "Groupings": [
+                    {
+                      "Projections": [
+                        0,
+                        1,
+                        2,
+                        3
+                      ],
+                      "Subtotal": 1
+                    }
+                  ]
+                },
+                "DataReduction": {
+                  "DataVolume": 3,
+                  "Primary": {
+                    "Window": {
+                      "Count": 500
+                    }
+                  }
+                },
+                "Version": 1
+              },
+              "ExecutionMetricsKind": 1
+            }
+          }
+        ]
+      },
+      "CacheKey": "{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"Counts of People by County\",\"Type\":0},{\"Name\":\"c\",\"Entity\":\"Counts of Vaccinations by County of Residence\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"County\"},\"Name\":\"FromBHSR.County\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"PartiallyCovered\"}},\"Function\":0},\"Name\":\"Sum(FromBHSR.PartiallyCovered)\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"FullyCovered\"}},\"Function\":0},\"Name\":\"Sum(FromBHSR.FullyCovered)\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"AdditionalDose1\"}},\"Function\":0},\"Name\":\"Sum(Counts of People by County.AdditionalDose1)\"}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"c\"}},\"Property\":\"Is Latest Row Filter\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"1L\"}}]]}}},{\"Condition\":{\"Not\":{\"Expression\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"County\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"''\"}}]]}}}}}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"County\"}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[0,1,2,3],\"Subtotal\":1}]},\"DataReduction\":{\"DataVolume\":3,\"Primary\":{\"Window\":{\"Count\":500}}},\"Version\":1},\"ExecutionMetricsKind\":1}}]}",
+      "QueryId": "",
+      "ApplicationContext": {
+        "DatasetId": "1e549164-aeab-4dcf-a97f-f70de27e715d",
+        "Sources": [
+          {
+            "ReportId": "53c72848-c634-4597-a571-54c087a01780",
+            "VisualId": "9806659342d1eceb97e6"
+          }
+        ]
+      }
+    }
+  ],
+  "cancelQueries": [],
+  "modelId": 314528
+}
         """.trimIndent()
 
     private val headers: Map<String, String> = mapOf(
@@ -266,18 +285,18 @@ class Data(private val objectMapper: ObjectMapper) {
             }
 
 
-            (data.get("PH").get(0).get("DM0") as ArrayNode).forEach {
+            (data.get("PH").get(1).get("DM1") as ArrayNode).forEach {
                 val county = (it.get("C") as ArrayNode)
                 if (it.get("R") != null && it.get("R").asInt() == 4) {
-                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|\"<Unavailable -- see state dashboard>\"|${county.get(2).asInt()}")
                 } else if (it.get("R") != null && it.get("R").asInt() == 2) {
-                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|\"<Unavailable -- see state dashboard>\"|${county.get(1).asInt()}|${county.get(2).asInt()}")
                 } else {
-                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|${county.get(2).asInt()}")
+                    countyCounts.add("\"${counties[county.get(0).asInt()]}\"|${county.get(1).asInt()}|${county.get(2).asInt()}|${county.get(3).asInt()}")
                 }
             }
             val fileContent: MutableList<String> = ArrayList(countyCounts.size + 1)
-            fileContent.add("\"county\"|\"partially covered\"|\"fully covered\"")
+            fileContent.add("\"county\"|\"partially covered\"|\"fully covered\"|\"received an additional dose since 8/31/2021\"")
             fileContent.addAll(countyCounts)
             return fileContent
         } catch (e: Exception) {
